@@ -7,6 +7,18 @@ A cold QQ bot that grants special titles.
 - Node.js (>= 20)
 - A running OneBot implementation which supports `set_group_special_title` (e.g. Lagrange.OneBot, OpenShamrock)
 
+## Usage
+
+### Scopes
+
+Only available in groups specified in the `.env` file; commands can only be executed by the group owner / admins.
+
+### Commands
+
+`/grant [QQ Number] [Title]`: Grants a given user the specified title. The title should be no longer than 18 bytes.
+
+`/refresh-privileged-list`: This application do not actively listens to the changes of group admins. So if the group admin list changes, you should manually execute this.
+
 ## Deployment
 
 First download the `index.js` file.
