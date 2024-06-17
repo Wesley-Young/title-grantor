@@ -1,0 +1,22 @@
+{
+  "name": "title-grantor",
+  "version": "1.0.0",
+  "description": "A cold title-giving bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env out/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/ws": "^8.5.10",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "webpack": "^5.92.0",
+    "webpack-cli": "^5.1.4",
+    "ws": "^8.17.1"
+  }
+}

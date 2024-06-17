@@ -1,0 +1,7 @@
+.idea
+yarn.lock
+out
+dist
+title-grantor.iml
+.env
+node_modules
