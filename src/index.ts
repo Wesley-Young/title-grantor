@@ -1,6 +1,4 @@
 import WebSocket from 'ws';
-import {randomUUID} from "node:crypto";
-import {log} from "node:util";
 
 const config = {
   wsUrl: process.env.WS_URL || 'ws://localhost:15002',
@@ -70,7 +68,7 @@ ws.on("message", (data) => {
     body.post_type === 'message' &&
     body.message_type === 'group' &&
     body.sub_type === 'normal' &&
-    body.group_id == config.groupIds && // quiz: why use == instead of === ?
+    config.groupIds.indexOf(body.group_id) !== -1 && // quiz: why use == instead of === ?
     privileged.get(body.group_id)?.indexOf(body.user_id) !== -1
   ) {
     const segment = (body.message as any[])[0];
