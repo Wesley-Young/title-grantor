@@ -39,6 +39,7 @@ function refreshPrivilegedList(groupId: number) {
     action: 'get_group_member_list',
     params: {
       group_id: groupId,
+      no_cache: true,
     },
     echo: 'RefreshPrivilegedList',
   }));
