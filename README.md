@@ -32,7 +32,7 @@ Create a `.env` file at the same directory as `index.js`, and add such lines:
 WS_URL=
 GROUP_NUMBER=
 ```
-`WS_URL`: The (Forward, Active, '正向') WebSocket URL of your OneBot service. (may need access token in query, e.g. `ws://...?token=...`)
+`WS_URL`: The (Forward, Active, '正向') WebSocket URL of your OneBot service. (may need access token in query, e.g. `ws://...?access_token=...`)
 
 `GROUP_NUMBER`: The number(s) of group(s) where the bot is supposed to be enabled. To specify multiple groups, please split numbers with comma(s), for example `12345,67890`.
 
