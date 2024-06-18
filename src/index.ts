@@ -44,26 +44,6 @@ function refreshPrivilegedList(groupId: number) {
   }));
 }
 
-ws.on('message', (data) => {
-  const body = JSON.parse(data.toString());
-
-  if (body.status === 'ok' && body.echo === ('RefreshPrivilegedList')) {
-    const memberList = body.data as any[];
-    const groupId = memberList[0].group_id as number;
-    const privilegedList = memberList
-      .filter(entry => entry.role === 'owner' || entry.role === 'admin')
-      .map(entry => entry.user_id);
-    privileged.set(groupId, privilegedList);
-
-    const logMessage = `Privileged list of ${groupId} updated: ${privilegedList.join(',')}`;
-
-    console.log(logMessage);
-    if (process.env.DEBUG_MODE) {
-      sendGroupMessage(groupId, logMessage);
-    }
-  }
-});
-
 ws.on('open', () => {
   config.groupIds.forEach(refreshPrivilegedList);
 });
@@ -124,6 +104,22 @@ ws.on("message", (data) => {
     config.groupIds.indexOf(body.group_id) !== -1
   ) {
     refreshPrivilegedList(body.group_id);
+  }
+
+  if (body.status === 'ok' && body.echo === ('RefreshPrivilegedList')) {
+    const memberList = body.data as any[];
+    const groupId = memberList[0].group_id as number;
+    const privilegedList = memberList
+    .filter(entry => entry.role === 'admin')
+    .map(entry => entry.user_id);
+    privileged.set(groupId, privilegedList);
+
+    const logMessage = `Privileged list of ${groupId} updated: ${privilegedList.join(',')}`;
+
+    console.log(logMessage);
+    if (process.env.DEBUG_MODE) {
+      sendGroupMessage(groupId, logMessage);
+    }
   }
 });
 
