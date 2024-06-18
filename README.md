@@ -15,9 +15,13 @@ Only available in groups specified in the `.env` file; only available when the b
 
 ### Commands
 
-`/grant [QQ Number] [Title]`: Grants a given user the specified title. The title should be no longer than 18 bytes.
+`/help`: View the usage of this bot.
 
-`/refresh-privileged-list`: This application does not actively listen to the changes of group admins. So if the group admin list changes, you should manually execute this.
+`/grant [QQ Number] [Title]`: Grants a given user the specified title. The title should be no longer than 18 bytes. One Chinese character in UTF-8 occupies 3 bytes, so a title in Chinese should be no longer than 6 Chinese characters. 
+
+> Do not attempt to use ASCII characters and Unicode characters together in a title longer than 18 bytes, because it will be cut off after its 18th byte, and if the 18th byte is within a Unicode character, this will cause unexpected outcome.
+
+`/refresh-privileged-list`: Although this application actively listens to the changes of group admins, there are some chance that the bot does not receive the notice. So if the group admin list changes and some of the admins cannot execute commands, those who have the privilege should manually execute this.
 
 ## Deployment
 

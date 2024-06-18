@@ -9,6 +9,16 @@ const ws = new WebSocket(config.wsUrl);
 
 const privileged = new Map<number, number[]>();
 
+const helpText: string = `Commands:
+
+\`/help\`: View the usage of this bot.
+
+\`/grant [QQ Number] [Title]\`: Grants a given user the specified title. The title should be no longer than 18 bytes. One Chinese character in UTF-8 occupies 3 bytes, so a title in Chinese should be no longer than 6 Chinese characters. 
+
+> Do not attempt to use ASCII characters and Unicode characters together in a title longer than 18 bytes, because it will be cut off after its 18th byte, and if the 18th byte is within a Unicode character, this will cause unexpected outcome.
+
+\`/refresh-privileged-list\`: Although this application actively listens to the changes of group admins, there are some chance that the bot does not receive the notice. So if the group admin list changes and some of the admins cannot execute commands, those who have the privilege should manually execute this.`
+
 function sendGroupMessage(groupId: number, text: string) {
   ws.send(JSON.stringify({
     action: 'send_group_msg',
@@ -17,9 +27,7 @@ function sendGroupMessage(groupId: number, text: string) {
       message: [
         {
           type: 'text',
-          data: {
-            text
-          }
+          data: { text }
         }
       ]
     }
@@ -103,7 +111,19 @@ ws.on("message", (data) => {
       if (text === '/refresh-privileged-list') {
         refreshPrivilegedList(body.group_id);
       }
+
+      if (text === '/help') {
+        sendGroupMessage(body.group_id, helpText)
+      }
     }
+  }
+
+  if (
+    body.post_type === 'notice' &&
+    body.notice_type === 'group_admin' &&
+    config.groupIds.indexOf(body.group_id) !== -1
+  ) {
+    refreshPrivilegedList(body.group_id);
   }
 });
 
