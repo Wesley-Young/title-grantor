@@ -49,10 +49,9 @@ ws.on('open', () => {
   config.groupIds.forEach(refreshPrivilegedList);
 });
 
-
 ws.on("message", (data) => {
   const body = JSON.parse(data.toString());
-  // console.log(body);
+  //console.log(body);
   if (
     body.post_type === 'message' &&
     body.message_type === 'group' &&
@@ -60,6 +59,56 @@ ws.on("message", (data) => {
     config.groupIds.indexOf(body.group_id) !== -1 && // quiz: why use == instead of === ?
     privileged.get(body.group_id)?.indexOf(body.user_id) !== -1
   ) {
+    let params = []
+    if (body.message.length === 1 && body.message[0].type === 'text'){
+      const text = body.message[0].data.text as string;
+      params = text.split(' ');
+    }
+    else{
+      for (let i in body.message){
+        if (body.message[i].type === 'text') {
+          params.push(body.message[i].data.text);
+        }
+        else if (body.message[i].type === 'at') {
+          params.push(body.message[i].data.qq)
+        }
+        if (params[0] === '/grant'){
+          if (params.length !== 3) { return; }
+        }
+      }
+    }
+    console.log(params);
+    if (params[0].startsWith('/grant')){
+      console.log(`Command called: ${params[0]} [group=${body.group_id},caller=${body.user_id}]`);
+      try {
+        const grantedId = parseInt(params[1]);
+        const title = params[2];
+
+        if (process.env.DEBUG_MODE) {
+          sendGroupMessage(body.group_id, `Trying to grant ${grantedId} a title ${title} `)
+        }
+
+        ws.send(JSON.stringify({
+          action: 'set_group_special_title',
+          params: {
+            group_id: body.group_id,
+            user_id: grantedId,
+            special_title: title
+          }
+        }));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (params[0].startsWith('/refresh-privileged-list')  && params.length === 1) {
+      refreshPrivilegedList(body.group_id);
+    }
+
+    if (params[0].startsWith('/help') && params.length === 1) {
+      sendGroupMessage(body.group_id, helpText)
+    }
+    
+    /*
     const segment = (body.message as any[])[0];
     if (segment.type === 'text') {
       const text = segment.data.text as string;
@@ -97,6 +146,7 @@ ws.on("message", (data) => {
         sendGroupMessage(body.group_id, helpText)
       }
     }
+    */
   }
 
   if (
@@ -123,7 +173,6 @@ ws.on("message", (data) => {
     }
   }
 });
-
 ws.on('close', () => {
   console.log('Instance closed.');
 })
